@@ -27,6 +27,9 @@
 		"Run": "Build 'Source/**/*.ts' --Watch",
 		"prepublishOnly": "Build 'Source/**/*.ts'"
 	},
+	"dependencies": {
+		"sweettooth": "0.0.1"
+	},
 	"devDependencies": {
 		"@playform/build": "0.1.8"
 	},
