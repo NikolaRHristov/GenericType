@@ -29,6 +29,7 @@ type FrameworkContext =
 // Hook context type based on usage location
 interface HookContext {
 	filename: string;
+
 	imports: string[];
 	framework: FrameworkContext["type"];
 }
@@ -56,7 +57,9 @@ export function createInferredHook<
 		options: Partial<ReactiveConfig<T>> = {},
 	) {
 		const hookName = name as Config["name"];
+
 		const framework = context.framework;
+
 		const reactiveId = kebabCase(extractHookName(hookName));
 
 		// Create the system instance with inferred configuration
@@ -109,6 +112,7 @@ function createFrameworkPlugin(framework: FrameworkContext["type"]): Plugin {
 export function inferHookContext(filename: string): HookContext {
 	// In practice, this would be done by a build tool or decorator
 	const framework = inferFrameworkFromFilename(filename);
+
 	const imports = inferImportsFromFramework(framework);
 
 	return {
@@ -122,8 +126,11 @@ function inferFrameworkFromFilename(
 	filename: string,
 ): FrameworkContext["type"] {
 	if (filename.includes(".tsx") || filename.includes(".jsx")) return "react";
+
 	if (filename.includes(".solid")) return "solid";
+
 	if (filename.includes(".vue")) return "vue";
+
 	return "react"; // default to React
 }
 
@@ -133,8 +140,10 @@ function inferImportsFromFramework(
 	switch (framework) {
 		case "react":
 			return ["useState", "useEffect"];
+
 		case "solid":
 			return ["createSignal", "createEffect"];
+
 		case "vue":
 			return ["ref", "onMounted"];
 	}
@@ -201,10 +210,12 @@ function HookFactory() {
 		descriptor: PropertyDescriptor,
 	) {
 		const context = inferHookContext(target.constructor.name);
+
 		const originalMethod = descriptor.value;
 
 		descriptor.value = function (...args: any[]) {
 			const hook = createInferredHook(propertyKey, context);
+
 			return originalMethod.apply(this, [hook, ...args]);
 		};
 

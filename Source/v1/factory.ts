@@ -14,6 +14,7 @@ export interface ReactiveHookResult<T> {
 	value: T;
 	error: Error | null;
 	isLoading: boolean;
+
 	setValue: (newValue: T | ((prev: T) => T)) => Promise<void>;
 	reset: () => Promise<void>;
 	meta: {
@@ -47,10 +48,12 @@ export function createReactiveHookFactory(system: ComponentSystem) {
 
 		const [state, setState] = useState<T>(() => {
 			const initialValue = reactive?.value() as T;
+
 			return transform ? transform(initialValue) : initialValue;
 		});
 
 		const [error, setError] = useState<Error | null>(null);
+
 		const [isLoading, setIsLoading] = useState(false);
 
 		// Memoize the setValue function to prevent unnecessary rerenders
@@ -61,6 +64,7 @@ export function createReactiveHookFactory(system: ComponentSystem) {
 				}
 
 				setIsLoading(true);
+
 				setError(null);
 
 				try {
@@ -74,10 +78,12 @@ export function createReactiveHookFactory(system: ComponentSystem) {
 						: resolvedValue;
 
 					await reactive.set(transformedValue);
+
 					setState(transformedValue);
 				} catch (err) {
 					const error =
 						err instanceof Error ? err : new Error(String(err));
+
 					setError(error);
 					onError?.(error);
 				} finally {
@@ -98,6 +104,7 @@ export function createReactiveHookFactory(system: ComponentSystem) {
 					const transformedValue = transform
 						? transform(value)
 						: value;
+
 					setState(transformedValue);
 				};
 
@@ -122,18 +129,22 @@ export function createReactiveHookFactory(system: ComponentSystem) {
 			if (!reactive) return;
 
 			setIsLoading(true);
+
 			setError(null);
 
 			try {
 				const initialValue = reactive.value() as T;
+
 				const transformedValue = transform
 					? transform(initialValue)
 					: initialValue;
 				await reactive.set?.(transformedValue);
+
 				setState(transformedValue);
 			} catch (err) {
 				const error =
 					err instanceof Error ? err : new Error(String(err));
+
 				setError(error);
 				onError?.(error);
 			} finally {
@@ -162,6 +173,7 @@ export function createReactiveHookFactory(system: ComponentSystem) {
 		options: Omit<UseReactiveOptions<T>, "immediate"> = {},
 	): Omit<ReactiveHookResult<T>, "setValue"> {
 		const depReactives = dependencies.map((id) => system.getReactive(id));
+
 		const depValues = depReactives.map((reactive) => reactive?.value());
 
 		const computedValue = useMemo(() => {
@@ -171,11 +183,13 @@ export function createReactiveHookFactory(system: ComponentSystem) {
 				const error =
 					err instanceof Error ? err : new Error(String(err));
 				options.onError?.(error);
+
 				return null;
 			}
 		}, [computation, ...depValues]);
 
 		const [error, setError] = useState<Error | null>(null);
+
 		const [isLoading] = useState(false);
 
 		useEffect(() => {

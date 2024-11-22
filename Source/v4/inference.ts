@@ -44,7 +44,9 @@ export function createEnhancedHookFactory(system: ComponentSystem) {
 					: hookNameOrConfig;
 
 			const rawName = config.name || "";
+
 			const processedName = ExtractHookName<typeof rawName>;
+
 			const kebabName = processedName.replace(
 				/[A-Z]/g,
 				(letter) => `-${letter.toLowerCase()}`,
@@ -115,6 +117,7 @@ function ExampleUsage() {
 		lifecycle: {
 			beforeCreate: (config) => {
 				console.log(`Creating hook: ${config.meta.hookName}`);
+
 				return config;
 			},
 		},
@@ -122,6 +125,7 @@ function ExampleUsage() {
 
 	// Using with type inference
 	type UserData = { id: string; name: string };
+
 	const typedHook = createReactHook<UserData, "useUserData">({
 		name: "useUserData",
 		initialValue: { id: "", name: "" },

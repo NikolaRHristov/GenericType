@@ -86,6 +86,7 @@ interface LifecycleInferenceResult {
 	dependencies: DependencyInsights;
 	stateManagement: StateManagementInsights;
 	errors: ErrorPatterns;
+
 	async: AsyncPatterns;
 	recommendations: Array<{
 		type:
@@ -118,6 +119,7 @@ export function createLifecycleInference(system: SystemContext) {
 
 	function inferLifecyclePatterns(reactives: Reactive[]): LifecyclePattern[] {
 		const patterns: LifecyclePattern[] = [];
+
 		const updateTimestamps = new Map<string, number[]>();
 
 		// Collect update timestamps
@@ -226,6 +228,7 @@ export function createLifecycleInference(system: SystemContext) {
 
 		// Architecture recommendations
 		const dependencyInsights = inferDependencyInsights(reactives);
+
 		if (dependencyInsights.cycles.length > 0) {
 			recommendations.push({
 				type: "architecture",
@@ -295,6 +298,7 @@ export function createLifecycleInference(system: SystemContext) {
 		inferLifecycles,
 		analyzeComponent: (componentId: string) => {
 			const reactive = system.getReactive(componentId);
+
 			if (!reactive) return null;
 
 			return {
@@ -307,9 +311,11 @@ export function createLifecycleInference(system: SystemContext) {
 		},
 		analyzeDependencyChain: (componentId: string) => {
 			const reactive = system.getReactive(componentId);
+
 			if (!reactive) return null;
 
 			const chain = getDependencyChain(reactive);
+
 			return inferLifecyclePatterns(chain);
 		},
 	};
@@ -317,6 +323,7 @@ export function createLifecycleInference(system: SystemContext) {
 
 // Example usage:
 const system = new ComponentSystem();
+
 const lifecycleInference = createLifecycleInference(system);
 
 // Get comprehensive insights
