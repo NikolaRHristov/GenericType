@@ -100,8 +100,11 @@ export function createEnhancedHookFactory(system: ComponentSystem) {
 
 // Create framework-specific factories
 const system = new ComponentSystem();
+
 export const createReactHook = createEnhancedHookFactory(system)("react");
+
 export const createSolidHook = createEnhancedHookFactory(system)("solid");
+
 export const createVueHook = createEnhancedHookFactory(system)("vue");
 
 // Example usage
