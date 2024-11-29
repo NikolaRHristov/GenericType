@@ -2,53 +2,76 @@ import type { Reactive, ReactiveConfig, SystemContext } from "./types";
 
 interface LifecyclePattern {
 	type: "sequential" | "concurrent" | "conditional" | "cyclic";
+
 	components: string[];
+
 	frequency: number;
+
 	avgDuration: number;
 }
 
 interface ComponentUsageMetrics {
 	updateFrequency: number;
+
 	averageUpdateDuration: number;
+
 	peakUpdateDuration: number;
+
 	lastUpdated: Date;
+
 	errorRate: number;
+
 	dependencyCount: number;
+
 	dependentCount: number;
 }
 
 interface PerformanceInsights {
 	bottlenecks: Array<{
 		componentId: string;
+
 		reason: string;
+
 		impact: number;
+
 		suggestion: string;
 	}>;
+
 	optimizationOpportunities: Array<{
 		type: "batching" | "memoization" | "lazy" | "preload";
+
 		components: string[];
+
 		potentialImprovement: number;
 	}>;
 }
 
 interface DependencyInsights {
 	cycles: Array<string[]>;
+
 	criticalPaths: Array<{
 		path: string[];
+
 		totalLatency: number;
 	}>;
+
 	isolatedComponents: string[];
+
 	highlyConnected: string[];
 }
 
 interface StateManagementInsights {
 	stateGroups: Array<{
 		components: string[];
+
 		type: "form" | "pagination" | "filter" | "data" | "ui";
+
 		updatePattern: "sync" | "async" | "derived";
 	}>;
+
 	derivedStateChains: Array<{
 		chain: string[];
+
 		computationType: "transform" | "aggregate" | "filter";
 	}>;
 }
@@ -56,13 +79,19 @@ interface StateManagementInsights {
 interface ErrorPatterns {
 	frequentFailures: Array<{
 		componentId: string;
+
 		errorType: string;
+
 		frequency: number;
+
 		context: Record<string, any>;
 	}>;
+
 	cascadingFailures: Array<{
 		source: string;
+
 		impactedComponents: string[];
+
 		frequency: number;
 	}>;
 }
@@ -70,33 +99,47 @@ interface ErrorPatterns {
 interface AsyncPatterns {
 	concurrentOperations: Array<{
 		components: string[];
+
 		frequency: number;
+
 		averageDuration: number;
 	}>;
+
 	sequentialChains: Array<{
 		chain: string[];
+
 		totalDuration: number;
 	}>;
 }
 
 interface LifecycleInferenceResult {
 	patterns: LifecyclePattern[];
+
 	metrics: Map<string, ComponentUsageMetrics>;
+
 	performance: PerformanceInsights;
+
 	dependencies: DependencyInsights;
+
 	stateManagement: StateManagementInsights;
+
 	errors: ErrorPatterns;
 
 	async: AsyncPatterns;
+
 	recommendations: Array<{
 		type:
 			| "performance"
 			| "architecture"
 			| "error-handling"
 			| "state-management";
+
 		priority: number;
+
 		description: string;
+
 		components: string[];
+
 		implementation: string;
 	}>;
 }
@@ -126,7 +169,9 @@ export function createLifecycleInference(system: SystemContext) {
 		reactives.forEach((reactive) => {
 			if (reactive.meta.lastUpdated) {
 				const timestamps = updateTimestamps.get(reactive.id) || [];
+
 				timestamps.push(reactive.meta.lastUpdated.getTime());
+
 				updateTimestamps.set(reactive.id, timestamps);
 			}
 		});
@@ -216,6 +261,7 @@ export function createLifecycleInference(system: SystemContext) {
 
 		// Performance recommendations
 		const performanceIssues = findPerformanceBottlenecks(reactives);
+
 		performanceIssues.forEach((issue) => {
 			recommendations.push({
 				type: "performance",

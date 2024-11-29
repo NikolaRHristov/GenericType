@@ -31,15 +31,19 @@ interface HookContext {
 	filename: string;
 
 	imports: string[];
+
 	framework: FrameworkContext["type"];
 }
 
 // Type inference for hook configuration
 type InferHookConfig<Name extends string, Context extends HookContext> = {
 	name: Name;
+
 	framework: Context["framework"];
+
 	reactive: {
 		id: CamelToKebab<ExtractHookName<Name>>;
+
 		type: "state" | "computed" | "effect";
 	};
 };
@@ -189,6 +193,7 @@ const VueCounter = {
 type AuthHookContext = HookContext & {
 	auth: {
 		type: "jwt" | "oauth";
+
 		storage: "local" | "session";
 	};
 };

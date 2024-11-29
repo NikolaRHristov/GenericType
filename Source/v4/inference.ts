@@ -14,7 +14,9 @@ type ExtractHookName<T> = T extends `use${infer Name}`
 // Enhanced hook configuration with naming
 interface EnhancedHookConfig<T> extends ReactiveConfig<T> {
 	name?: string;
+
 	framework?: "react" | "solid" | "vue";
+
 	lifecycle?: LifecycleHandlers<T>;
 }
 
@@ -23,9 +25,13 @@ interface LifecycleHandlers<T> {
 	beforeCreate?: (
 		config: ReactiveConfig<T>,
 	) => ReactiveConfig<T> | Promise<ReactiveConfig<T>>;
+
 	afterCreate?: (reactive: Reactive<T>) => void | Promise<void>;
+
 	beforeUpdate?: (value: T, newValue: T) => T | Promise<T>;
+
 	afterUpdate?: (value: T) => void | Promise<void>;
+
 	beforeDestroy?: (reactive: Reactive<T>) => void | Promise<void>;
 }
 
@@ -111,6 +117,7 @@ export const createVueHook = createEnhancedHookFactory(system)("vue");
 function ExampleUsage() {
 	// Using just a name
 	const counterHook = createReactHook("useCounter");
+
 	console.log(counterHook.meta); // { originalName: "useCounter", processedName: "Counter", kebabName: "counter" }
 
 	// Using with configuration

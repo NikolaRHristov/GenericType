@@ -4,22 +4,32 @@ import type { ComponentSystem, Reactive } from "./types";
 
 export interface UseReactiveOptions<T> {
 	immediate?: boolean;
+
 	transform?: (value: T) => T;
+
 	onError?: (error: Error) => void;
+
 	suspense?: boolean;
+
 	debounce?: number;
 }
 
 export interface ReactiveHookResult<T> {
 	value: T;
+
 	error: Error | null;
+
 	isLoading: boolean;
 
 	setValue: (newValue: T | ((prev: T) => T)) => Promise<void>;
+
 	reset: () => Promise<void>;
+
 	meta: {
 		updateCount: number;
+
 		lastUpdated: Date | undefined;
+
 		status: "idle" | "loading" | "error" | "success";
 	};
 }
@@ -85,6 +95,7 @@ export function createReactiveHookFactory(system: ComponentSystem) {
 						err instanceof Error ? err : new Error(String(err));
 
 					setError(error);
+
 					onError?.(error);
 				} finally {
 					setIsLoading(false);
@@ -110,6 +121,7 @@ export function createReactiveHookFactory(system: ComponentSystem) {
 
 				if (debounce > 0) {
 					clearTimeout(timeoutId);
+
 					timeoutId = setTimeout(updateFn, debounce);
 				} else {
 					updateFn();
@@ -120,6 +132,7 @@ export function createReactiveHookFactory(system: ComponentSystem) {
 
 			return () => {
 				unsubscribe();
+
 				clearTimeout(timeoutId);
 			};
 		}, [reactive, reactiveId, immediate, transform, debounce]);
@@ -138,6 +151,7 @@ export function createReactiveHookFactory(system: ComponentSystem) {
 				const transformedValue = transform
 					? transform(initialValue)
 					: initialValue;
+
 				await reactive.set?.(transformedValue);
 
 				setState(transformedValue);
@@ -146,6 +160,7 @@ export function createReactiveHookFactory(system: ComponentSystem) {
 					err instanceof Error ? err : new Error(String(err));
 
 				setError(error);
+
 				onError?.(error);
 			} finally {
 				setIsLoading(false);
@@ -182,6 +197,7 @@ export function createReactiveHookFactory(system: ComponentSystem) {
 			} catch (err) {
 				const error =
 					err instanceof Error ? err : new Error(String(err));
+
 				options.onError?.(error);
 
 				return null;
@@ -195,6 +211,7 @@ export function createReactiveHookFactory(system: ComponentSystem) {
 		useEffect(() => {
 			const handleError = (err: Error) => {
 				setError(err);
+
 				options.onError?.(err);
 			};
 
